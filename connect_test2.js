@@ -22,6 +22,7 @@ var server = connect.createServer(
 
 	},
 	connect.router(routes),
+	// could chain multiple middleware here
 	connect.basicAuth('pete', '123456'),
 	connect.directory(__dirname + '/public'),
  	connect.static(__dirname + '/public')
