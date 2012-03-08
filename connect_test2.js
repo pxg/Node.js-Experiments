@@ -11,9 +11,18 @@ if(process.env.appenv == 'pxg-air'){
 console.log(port);
 
 var routes = function (app) {
+	app.get("/remy/:prop", function (req, res) {
+		res.end('you were looking for something like ' + req.params.prop);
+	});
+
 	app.get('/adam', function (req, res) {
  		// serve custom content
  		res.end('Woooh routing!');
+	});
+	app.get('/pete', function (req, res) {
+ 		// serve custom content
+ 		//res.writeHead(404, { 'content-type'})
+ 		res.end('this is not the pete you are looking for');
 	});
 };
 
