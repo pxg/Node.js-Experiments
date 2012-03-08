@@ -8,12 +8,20 @@ var server = http.createServer(function(req, res) {
 	
 	// TODO: look for different URLs
 	console.log(req.url);
+	var i = 0;
 
 	//setTimeout(function () {
 	setInterval(function () {
   		//console.log('World');
-  		res.write('<p>write first</p>');
-  		// TODO count a var here
+  		res.write('<p>write firsttttt ' + i + '</p>');
+  		i++;
+
+  		if(i > 20){
+  			//break;
+  			//return false;
+  			res.write('<p>larger</p>');
+  			clearInterval()
+  		}
 	}, 100);
 
 	res.write('<h1>Writing JavaScript makes me happy</h1>');

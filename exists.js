@@ -4,7 +4,7 @@ var path = require('path');
 console.log('step 1: file exists?');
 
 // check exists with callback, could validate for argv[2] here (or try catch)
-path.exists(process.argv[2], function (exists) {
+path.exists('~/Desktop', function (exists) {
 	console.log('Exists? ' + exists);
 });
 
