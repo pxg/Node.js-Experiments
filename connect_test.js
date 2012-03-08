@@ -12,9 +12,8 @@ console.log(port);
 
 var server = connect.createServer(
 	connect.logger(),
+	connect.basicAuth('pete', '123456'),
 	connect.directory(__dirname + '/public'),
-	//connect.favicon(),
  	connect.static(__dirname + '/public')
 );
 server.listen(port);
-//server.listen(8000);
