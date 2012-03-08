@@ -1,36 +1,29 @@
 var connect = require('connect');
-
-// switch port number based on environmnet variable
-console.log(process.env.appenv);
-
-if(process.env.appenv == 'pxg-air'){
-	var port = 8000;
-}else{
-	var port = 8080;
-}
-console.log(port);
+var count = 0;
 
 var routes = function (app) {
-	app.get("/remy/:prop", function (req, res) {
-		res.end('you were looking for something like ' + req.params.prop);
+	app.get("/count", function (req, res) {
+		count++;
+		res.end(req.count.toString());
 	});
+}
 
-	app.get('/adam', function (req, res) {
- 		// serve custom content
- 		res.end('Woooh routing!');
-	});
-	app.get('/pete', function (req, res) {
- 		// serve custom content
- 		//res.writeHead(404, { 'content-type'})
- 		res.end('this is not the pete you are looking for');
-	});
-};
-
+// once node starts this continues to loop. As server continues to listen. Unlike PHP
 var server = connect.createServer(
 	connect.logger(),
+
+	function(req, res, next){
+
+		if(req.url != 'favicon.ico'){
+			count++;
+		}
+		req.count = count;
+		next();
+
+	},
+	connect.router(routes),
 	connect.basicAuth('pete', '123456'),
 	connect.directory(__dirname + '/public'),
- 	connect.static(__dirname + '/public'),
- 	connect.router(routes)
+ 	connect.static(__dirname + '/public')
 );
-server.listen(port);
+server.listen(8000);
