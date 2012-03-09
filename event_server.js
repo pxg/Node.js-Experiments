@@ -1,63 +1,37 @@
 var connect = require('connect');
-
 var connections = [];
-// messages object (non foreach)
 var messages = {};
 var id = 0;
 
-// looping on the server
+// looping on the server (never stops while server is running)
 setInterval(function(){
   var now = Date.now();
+  // id needed if we want last-event-id
   messages[id] = 'id:' + id + '\nretry:10000\ntype:time\ndata: ' + now + '\n\n';
-
+  // write to all connections
   connections.forEach(function(res) {
-    // this will tell the frontend to retry if the connection is dropped
     res.write(messages[id]);
   });
-
+  // increment id
   id++;
-
 }, 1000);
-
 
 var routes = function (app) {
   app.get('/mentions/:term', function(req, res, next) {
     var last_id = null;
 
+    // check the headers are for event stream
     if (req.headers.accept == 'text/event-stream') {
-      // cache and res and send initial connection
-
+      // write header
       res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'nocache'});
+      // add this new connection to the others
       connections.push(res);
-      // could write number of connections here?
+      console.log('Num of connections ' + Object.keys(connections).length);
 
-/*
-23: 14: undefined
-23: 15: undefined
-23: 16: undefined
-23: 17: undefined
-23: 18: undefined
-23: 19: undefined
-23: 20: undefined
-23: 21: undefined
-23: 22: undefined
-23: 23: undefined
-24: 14: undefined
-24: 15: undefined
-24: 16: undefined
-24: 17: undefined
-24: 18: undefined
-24: 19: undefined
-24: 20: undefined
-24: 21: undefined
-24: 22: undefined
-24: 23: id:23
-*/
-      //console.log(req.headers);
+      // if not the first message (last event id  provided)
       if(req.headers['last-event-id']){
-        //console.log(req.headers['last-event-id']);
-        last_id = req.headers['last-event-id'] * 1; // for number
-
+        last_id = req.headers['last-event-id'] * 1; // cast to number
+        // while not up to date on messages
         while(last_id < id){
           res.write(messages[last_id]);
           console.log(id + ': ' + last_id + ': ' + messages[last_id]);
