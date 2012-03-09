@@ -4,6 +4,12 @@ var routes = function (app) {
   app.get('/mentions/:term', function(req, res, next) {
     if (req.headers.accept == 'text/event-stream') {
       // cache and res and send initial connection
+      res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'nocache'});
+
+      setInterval(function(){
+        res.write('id:0\ndata: hello world\n\n');
+      }, 1000);
+      //res.end();
     } else {
       res.writeHead(404);
       res.end('No direct access allowed');
@@ -11,13 +17,6 @@ var routes = function (app) {
   });
 }
 
-/*
-var server = connect.createServer(
-  connect.logger(),
-  connect.router(routes)
-);
-server.listen(8000);
-*/
 connect.createServer(
   connect.static(__dirname + '/public'),
   connect.router(routes)

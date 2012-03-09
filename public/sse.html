@@ -1,0 +1,29 @@
+<html>
+<head>
+  <script src="EventSource.js" type="text/javascript"></script>
+  <script type="text/javascript">
+  //document.write("<p>" + Date() + "</p>");
+  var es = new EventSource('/mentions/html5');
+  
+  es.onopen = function () {
+    console.log('listening');
+  };
+
+  es.onmessage = function (event) {
+    console.log(event);
+  }
+
+  es.addEventListener('tweet', function(e) {
+    showTweet(e.data);
+  });
+
+  es.addEventListener('retweet', function(e) {
+    updateRTCount(e.data);
+  });
+
+  </script>
+</head>
+<body>
+  <h1>node tests for events</h1>
+</body>
+</html>
