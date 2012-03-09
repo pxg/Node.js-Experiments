@@ -11,6 +11,7 @@ setInterval(function(){
   // write to all connections
   connections.forEach(function(res) {
     res.write(messages[id]);
+    
   });
   // increment id
   id++;

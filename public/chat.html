@@ -1,0 +1,23 @@
+<html>
+<head>
+  <script src="EventSource.js" type="text/javascript"></script>
+  <script type="text/javascript">
+
+  var conn = new WebSocket('ws://node.remysharp.com:8000');
+
+  conn.onopen = function () {
+    console.log('listening');
+  };
+
+  conn.onmessage = function (event) {
+    console.log('message: ' + event.data);
+  }
+
+  conn.send('horses - the best of all the animals');
+
+  </script>
+</head>
+<body>
+  <h1>chat.html</h1>
+</body>
+</html>
