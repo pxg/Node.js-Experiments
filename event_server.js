@@ -1,13 +1,17 @@
 var connect = require('connect');
 
 var connections = [];
+var id = 0;
+
 setInterval(function(){
 
   //res.write('id:0\ndata: hello world\n\n');
   var now = Date.now();
+  id++;
+
   connections.forEach(function(res) {
     // this will tell the frontend to retry if the connection is dropped
-    res.write('id:0\nretry:10000\ntype:time\ndata: ' + now + '\n\n');
+    res.write('id:' + id + '\nretry:10000\ntype:time\ndata: ' + now + '\n\n');
   });
 }, 1000);
 
@@ -16,6 +20,11 @@ var routes = function (app) {
   app.get('/mentions/:term', function(req, res, next) {
     if (req.headers.accept == 'text/event-stream') {
       // cache and res and send initial connection
+
+      //console.log(req.headers);
+      if(req.headers['last-event-id']){
+        console.log(req.headers['last-event-id']);
+      }
       res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'nocache'});
       connections.push(res);
       // could write number of connections here?

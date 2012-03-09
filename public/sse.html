@@ -3,6 +3,8 @@
   <script src="EventSource.js" type="text/javascript"></script>
   <script type="text/javascript">
   //document.write("<p>" + Date() + "</p>");
+
+  // Event source retry to connect after 10 seconds
   var es = new EventSource('/mentions/html5');
 
   es.onopen = function () {
@@ -10,8 +12,7 @@
   };
 
   es.onmessage = function (event) {
-    console.log(event.data);
-    console.log('The server time is ');
+    console.log('The server time is ' + event.data);
   }
 
   es.addEventListener('tweet', function(e) {
