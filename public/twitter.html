@@ -24,7 +24,8 @@
         var tweet_list = $("#tweets");  
  
         function load_tweets() {
-            $.getJSON("/twitter?javascript", function(tweets) {
+            // works with space
+            $.getJSON("/twitter?justin bieber", function(tweets) {
                 $.each(tweets.results, function() {
                     $("<li>").html(this.text).prependTo(tweet_list);
                 });
