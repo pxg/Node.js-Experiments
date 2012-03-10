@@ -11,13 +11,17 @@ app.get('/', function (req, res) {
     //res.render('client', {token: token});
     console.log('client');
   });
+  /*
 });
 
 app.post('/message', function (req, res) {
+  */
+  console.log('got here');
+
   twitterClient.apiCall('POST', '/statuses/update.json',
     {token: {oauth_token_secret: req.param('oauth_token_secret'), oauth_token: req.param('oauth_token')}, status: req.param('message')},
     function (error, result) {
-      res.render('done.jade');
+      //res.render('done.jade');
       console.log('done');
     }
   );
