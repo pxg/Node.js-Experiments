@@ -3,7 +3,8 @@
   <script src="EventSource.js" type="text/javascript"></script>
   <script type="text/javascript">
 
-  var conn = new WebSocket('ws://node.remysharp.com:8000');
+  //var conn = new WebSocket('ws://node.remysharp.com:8000');
+  var conn = new WebSocket('ws://localhost:8000');
 
   conn.onopen = function () {
     console.log('listening');
