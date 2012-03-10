@@ -12,4 +12,4 @@ oAuth.post("http://api.twitter.com/1/statuses/update.json", twitterAccessToken,
                            twitterAccessTokenSecret, {"status":"Ring the bell cos it's time to eat"}, function(error, data) {
                              if(error) console.log(require('sys').inspect(error))
                              else console.log(data)
-});   
+});
