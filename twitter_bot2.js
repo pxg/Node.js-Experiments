@@ -13,52 +13,6 @@ var http = require("http"),
   fs=require("fs"),
   events=require("events"),
   sys = require("sys");
-  
-/**
- * Handle the serving of files with static content
- * 
- * @param {Object} uri
- * @param {Object} response
- */
-function load_static_web_file(uri, response) {
-  var filename = path.join(process.cwd(), uri);
-    
-  // If path.exists function takes a string parameter - which is a path to
-  // the document being requested - and a function which gets passed a boolean
-  // argument which is true if a file at the path exists, and false if it doesn't
-  path.exists(filename, function(exists) {
-    
-    // File not found. Return a 404 error.
-        if (!exists) {
-            response.writeHead(404, {"Content-Type": "text/plain"});
-            response.write("Four Oh Four! Wherefour art thou?");
-            response.end();
-            return;
-        }
-        
-    // File does exist. Execute the FileSystem.readFile() method
-    // with a closure that returns a 500 error if the file could not
-    // be read properly.
-        fs.readFile(filename, "binary", function(err, file) {
-      
-      // File could not be read, return a 500 error.
-            if (err) {
-                response.writeHead(500, {"Content-Type": "text/plain"});
-                response.write(err+"\n");
-                response.end();
-                return;
-            }
-            
-      // File was found, and successfully read from the file system.
-      // Return a 200 header and the file as binary data.
-            response.writeHead(200);
-            response.write(file, "binary");
-      
-      // End the response.
-            response.end();
-        });
-    });
-}
 
 var Twitter = (function(){
     var eventEmitter = new events.EventEmitter();
@@ -74,10 +28,10 @@ var Twitter = (function(){
  * 
  * @param {Object} query
  */
-function get_tweets(query) {
+function getTweets(query) {
   
   console.log('getting tweets for ' + query);
-  
+
   // Send a search request to Twitter
   var request = http.request({
     host: "search.twitter.com",
@@ -129,7 +83,7 @@ function get_tweets(query) {
            * for this event in the createServer() function (see below).
            */ 
           Twitter.EventEmitter.emit("tweets", tweets);
-
+          console.log('emittin twitter event');
           // loop tweets (do we have the user that sent them?)
           // get username and call function to send @reply (do as seperate file first)
         }
@@ -156,60 +110,18 @@ function get_tweets(query) {
   request.end();
 }
 
-/**
- * Create an HTTP server listening on port 8124
- * 
- * @param {Object} request
- * @param {Object} response
- */
-http.createServer(function (request, response) {
-  // Parse the entire URI to get just the pathname
-  var uri = url.parse(request.url).pathname, query;
-  
-  // If the user is requesting the Twitter search feature
-  if(uri === "/twitter") {
-  
-        /*
-         * On each request, if it takes longer than 20 seconds, end the response 
-         * and send back an empty structure.
-         */
-        var timeout = setTimeout(function() {  
-            response.writeHead(200, { "Content-Type" : "text/plain" });  
-            response.write(JSON.stringify([]));  
-            response.end();  
-        }, 20000);
-  
-      /*
-       * Register a listener for the 'tweets' event on the Twitter.EventEmitter.
-       * This event is fired when new tweets are found and parsed. 
-       *      (see get_tweets() method above) 
-       */
-    Twitter.EventEmitter.once("tweets", function(tweets){
-            // Send a 200 header and the tweets structure back to the client
-      response.writeHead(200, {
-        "Content-Type": "text/plain"
-      });
-      response.write(JSON.stringify(tweets));
-      response.end();
-      
-      // Stop the timeout function from completing (see below)
-      clearTimeout(timeout);
-    });
 
-        // Parse out the search term
-        query = request.url.split("?")[1];
-    
-        // Search for tweets with the search term
-        get_tweets(query);
-  
-  /*
-   * For all other requests, try to return a static page by calling the 
-   * load_static_web_file() function.
-   */ 
-    } else {  
-        load_static_web_file(uri, response);  
-    }
-}).listen(8124);
+// list for event (is this the best way to do this?)
+Twitter.EventEmitter.once("tweets", function(tweets){
+  console.log(tweets);
+});
 
-// Put a message in the console verifying that the HTTP server is up and running
-console.log("Server running at http://127.0.0.1:8124/");
+
+// looping on the server (never stops while server is running)
+setInterval(function(){
+  // add function to url encode
+  var query = 'justin%20bieber';
+  getTweets(query);
+  console.log("Interval");
+  // run everysecond
+}, 1000);
